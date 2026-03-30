@@ -12,7 +12,15 @@ function authenticate(req, res, next) {
   }
 
   try {
-    const payload = jwt.verify(token, env.jwtSecret);
+    const payload = jwt.verify(token, env.jwtSecret, {
+      algorithms: ["HS256"],
+      clockTolerance: 5
+    });
+
+    if (!payload || typeof payload.sub !== "string" || !payload.sub) {
+      return res.status(401).json({ message: "Invalid or expired token." });
+    }
+
     const user = findById(payload.sub);
 
     if (!user) {

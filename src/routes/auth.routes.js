@@ -8,6 +8,11 @@ const { createUser, findByEmail, sanitize } = require("../services/userStore");
 
 const router = express.Router();
 
+const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const passwordMinLength = 8;
+// Constant hash used to reduce user-enumeration timing differences on login.
+const unknownUserPasswordHash = "$2a$12$MCMjM1f42C3Lzc8M8kQ8supB6fQtbDNRsTA70vsK1tnE.bBZ5YQ4q";
+
 function createToken(user) {
   return jwt.sign({ email: user.email }, env.jwtSecret, {
     subject: user.id,
@@ -25,7 +30,15 @@ router.post("/register", async (req, res, next) => {
       return res.status(400).json({ message: "name, email, and password are required." });
     }
 
-    if (password.length < 8) {
+    if (!emailPattern.test(email)) {
+      return res.status(400).json({ message: "A valid email address is required." });
+    }
+
+    if (name.length < 2 || name.length > 80) {
+      return res.status(400).json({ message: "name must be between 2 and 80 characters." });
+    }
+
+    if (password.length < passwordMinLength) {
       return res.status(400).json({ message: "Password must be at least 8 characters long." });
     }
 
@@ -49,9 +62,14 @@ router.post("/login", async (req, res, next) => {
       return res.status(400).json({ message: "email and password are required." });
     }
 
+    if (!emailPattern.test(email)) {
+      return res.status(400).json({ message: "A valid email address is required." });
+    }
+
     const user = findByEmail(email);
 
     if (!user) {
+      await bcrypt.compare(password, unknownUserPasswordHash);
       return res.status(401).json({ message: "Invalid credentials." });
     }
 

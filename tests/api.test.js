@@ -67,3 +67,23 @@ test("PATCH /api/v1/utilities/:utilityType requires auth and updates status", as
   assert.equal(authorized.status, 200);
   assert.equal(authorized.body.utility.status, "outage");
 });
+
+test("auth validation rejects invalid register email", async () => {
+  const response = await request(app).post("/api/v1/auth/register").send({
+    name: "Campus Tester",
+    email: "not-an-email",
+    password: "StrongPass!123"
+  });
+
+  assert.equal(response.status, 400);
+  assert.equal(response.body.message, "A valid email address is required.");
+});
+
+test("GET /api/v1/auth/me rejects malformed bearer token", async () => {
+  const response = await request(app)
+    .get("/api/v1/auth/me")
+    .set("Authorization", "Bearer not.a.valid.token");
+
+  assert.equal(response.status, 401);
+  assert.equal(response.body.message, "Invalid or expired token.");
+});
