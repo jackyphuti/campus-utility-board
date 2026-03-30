@@ -1,6 +1,6 @@
 # Campus Utility Board Backend
 
-Production-ready backend foundation for your sprint workflow:
+Production-ready backend workflow:
 
 - REST API for auth and utility status management
 - JWT-based authentication
@@ -8,57 +8,22 @@ Production-ready backend foundation for your sprint workflow:
 - Docker setup for consistent local/prod runtime
 - GitHub Actions CI for PR quality gates
 
-## Tech Stack
-
-- Node.js 20+
-- Express 5
-- Socket.IO
-- JWT + bcryptjs
 
 ## Quick Start
-
 1. Install dependencies:
-
 ```bash
 npm ci
 ```
-
 1. Create environment file:
-
 ```bash
-cp .env.example .env
+cp .env
 ```
-
 1. Set a strong JWT secret in .env (minimum 32 chars).
-
 1. Run in dev mode:
-
 ```bash
 npm run dev
 ```
-
 Server runs on <http://localhost:4000>.
-
-## API Base
-
-- Base URL: /api/v1
-
-## Endpoints
-
-- GET /api/v1/health
-- POST /api/v1/auth/register
-- POST /api/v1/auth/login
-- GET /api/v1/auth/me (Bearer token)
-- GET /api/v1/utilities
-- GET /api/v1/utilities/:utilityType
-- PATCH /api/v1/utilities/:utilityType (Bearer token)
-
-Allowed utility status values:
-
-- operational
-- degraded
-- outage
-- maintenance
 
 ## Socket Events
 
@@ -108,7 +73,7 @@ git push -u origin feat/<module-name>
 1. Require at least one review before merge.
 1. Squash merge to keep main clean.
 
-## Notes for Frontend Team
+## Notes for Nkosi and savuswa (Frontend Team)
 
 - API responses are JSON and include clear error messages.
 - Utility updates through PATCH are instantly broadcast via Socket.IO.
