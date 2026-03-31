@@ -1,0 +1,67 @@
+TAP version 13
+# [dotenv@17.3.1] injecting env (9) from .env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+# [0mGET /api/v1/health [32m200[0m 17.696 ms - 73[0m
+# Subtest: GET /api/v1/health returns service health
+ok 1 - GET /api/v1/health returns service health
+  ---
+  duration_ms: 64.833647
+  ...
+# [0mPOST /api/v1/auth/register [32m201[0m 327.560 ms - 418[0m
+# [0mPOST /api/v1/auth/login [32m200[0m 281.144 ms - 418[0m
+# [0mGET /api/v1/auth/me [32m200[0m 3.705 ms - 160[0m
+# Subtest: auth flow register -> login -> me works
+ok 2 - auth flow register -> login -> me works
+  ---
+  duration_ms: 774.609256
+  ...
+# [0mPOST /api/v1/auth/register [32m201[0m 293.970 ms - 406[0m
+# [0mPATCH /api/v1/utilities/electricity [33m401[0m 1.118 ms - 54[0m
+# [0mPATCH /api/v1/utilities/electricity [32m200[0m 1.899 ms - 132[0m
+# Subtest: PATCH /api/v1/utilities/:utilityType requires auth and updates status
+ok 3 - PATCH /api/v1/utilities/:utilityType requires auth and updates status
+  ---
+  duration_ms: 309.304024
+  ...
+# [0mPOST /api/v1/auth/register [33m400[0m 0.456 ms - 48[0m
+# Subtest: auth validation rejects invalid register email
+ok 4 - auth validation rejects invalid register email
+  ---
+  duration_ms: 4.029759
+  ...
+# [0mGET /api/v1/auth/me [33m401[0m 1.970 ms - 39[0m
+# Subtest: GET /api/v1/auth/me rejects malformed bearer token
+ok 5 - GET /api/v1/auth/me rejects malformed bearer token
+  ---
+  duration_ms: 6.531893
+  ...
+# [0mPOST /api/v1/posts [33m401[0m 1.068 ms - 54[0m
+# Subtest: POST /api/v1/posts requires auth
+ok 6 - POST /api/v1/posts requires auth
+  ---
+  duration_ms: 7.368444
+  ...
+# [0mPOST /api/v1/auth/register [32m201[0m 332.673 ms - 412[0m
+# [0mPOST /api/v1/posts [33m400[0m 2.910 ms - 31[0m
+# Subtest: POST /api/v1/posts validates non-empty text
+ok 7 - POST /api/v1/posts validates non-empty text
+  ---
+  duration_ms: 345.283748
+  ...
+# [0mPOST /api/v1/auth/register [32m201[0m 288.307 ms - 409[0m
+# [0mPOST /api/v1/posts [32m201[0m 1.530 ms - 299[0m
+# [0mGET /api/v1/posts [32m200[0m 0.724 ms - 302[0m
+# Subtest: posts flow create -> list returns newest post
+ok 8 - posts flow create -> list returns newest post
+  ---
+  duration_ms: 298.97548
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 11872.857371
+EXIT_CODE:0

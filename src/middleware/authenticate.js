@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 const env = require("../config/env");
 const { findById, sanitize } = require("../services/userStore");
 
-function authenticate(req, res, next) {
+async function authenticate(req, res, next) {
   const authHeader = req.headers.authorization || "";
   const [scheme, token] = authHeader.split(" ");
 
@@ -21,7 +21,7 @@ function authenticate(req, res, next) {
       return res.status(401).json({ message: "Invalid or expired token." });
     }
 
-    const user = findById(payload.sub);
+    const user = await findById(payload.sub);
 
     if (!user) {
       return res.status(401).json({ message: "Invalid token user." });

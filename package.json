@@ -7,7 +7,7 @@
     "dev": "nodemon server.js",
     "start": "node server.js",
     "check": "node -e \"require('./src/app'); console.log('app check passed')\"",
-    "test": "node --test"
+    "test": "node --test --test-concurrency=1"
   },
   "keywords": [],
   "author": "",
@@ -24,10 +24,15 @@
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.3.3",
     "morgan": "^1.10.1",
+    "passport": "^0.7.0",
+    "passport-google-oauth20": "^2.0.0",
+    "passport-microsoft": "^2.1.0",
     "socket.io": "^4.8.3"
   },
   "devDependencies": {
+    "mongodb-memory-server": "^11.0.1",
     "nodemon": "^3.1.14",
+    "socket.io-client": "^4.8.3",
     "supertest": "^7.2.2"
   }
 }

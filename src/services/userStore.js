@@ -1,52 +1,67 @@
-const crypto = require("crypto");
+const mongoose = require("mongoose");
 
-const usersById = new Map();
-const userIdByEmail = new Map();
+const User = require("../../models/User");
 
-function sanitize(user) {
-  return {
-    id: user.id,
-    name: user.name,
-    email: user.email,
-    createdAt: user.createdAt
-  };
-}
-
-function findByEmail(email) {
-  const normalizedEmail = String(email || "").trim().toLowerCase();
-  const userId = userIdByEmail.get(normalizedEmail);
-  if (!userId) {
-    return null;
-  }
-
-  return usersById.get(userId) || null;
-}
-
-function findById(userId) {
-  return usersById.get(userId) || null;
-}
-
-function createUser({ name, email, passwordHash }) {
-  const normalizedEmail = String(email || "").trim().toLowerCase();
-
-  if (userIdByEmail.has(normalizedEmail)) {
-    const error = new Error("A user with this email already exists.");
-    error.statusCode = 409;
+function assertMongoConnection() {
+  if (mongoose.connection.readyState !== 1) {
+    const error = new Error("Database is not connected.");
+    error.statusCode = 503;
     throw error;
   }
+}
 
-  const user = {
-    id: crypto.randomUUID(),
-    name: String(name || "").trim(),
-    email: normalizedEmail,
-    passwordHash,
-    createdAt: new Date().toISOString()
+function sanitize(user) {
+  const id = String(user.id || user._id);
+
+  return {
+    id,
+    name: user.name,
+    email: user.email,
+    university: user.university || null,
+    studentId: user.studentId || null,
+    degree: user.degree || null,
+    yearOfStudy: user.yearOfStudy || null,
+    campus: user.campus || null,
+    createdAt: new Date(user.createdAt).toISOString()
   };
+}
 
-  usersById.set(user.id, user);
-  userIdByEmail.set(normalizedEmail, user.id);
+async function findByEmail(email) {
+  assertMongoConnection();
+  const normalizedEmail = String(email || "").trim().toLowerCase();
+  return User.findOne({ email: normalizedEmail }).lean();
+}
 
-  return sanitize(user);
+async function findById(userId) {
+  assertMongoConnection();
+  return User.findById(String(userId)).lean();
+}
+
+async function createUser({ name, email, passwordHash, university, studentId, degree, yearOfStudy, campus }) {
+  assertMongoConnection();
+  const normalizedEmail = String(email || "").trim().toLowerCase();
+  try {
+    const created = await User.create({
+      name: String(name || "").trim(),
+      email: normalizedEmail,
+      passwordHash,
+      university: university || undefined,
+      studentId: studentId || undefined,
+      degree: degree || undefined,
+      yearOfStudy: yearOfStudy || undefined,
+      campus: campus || undefined
+    });
+
+    return sanitize(created);
+  } catch (error) {
+    if (error && error.code === 11000) {
+      const duplicate = new Error("A user with this email already exists.");
+      duplicate.statusCode = 409;
+      throw duplicate;
+    }
+
+    throw error;
+  }
 }
 
 module.exports = {

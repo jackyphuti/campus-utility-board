@@ -12,6 +12,7 @@ const env = {
   port: toNumber(process.env.PORT, 4000),
   corsOrigin: process.env.CORS_ORIGIN || "*",
   socketCorsOrigin: process.env.SOCKET_CORS_ORIGIN || process.env.CORS_ORIGIN || "*",
+  frontendUrl: process.env.FRONTEND_URL || "http://localhost:5173",
   jwtSecret: process.env.JWT_SECRET || "",
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || "1h"
 };

@@ -10,22 +10,31 @@ const {
 
 const router = express.Router();
 
-router.get("/", (_req, res) => {
-  return res.status(200).json({ utilities: getAllUtilities() });
-});
-
-router.get("/:utilityType", (req, res) => {
-  const utilityType = String(req.params.utilityType || "").trim().toLowerCase();
-  const utility = getUtility(utilityType);
-
-  if (!utility) {
-    return res.status(404).json({ message: "Utility not found." });
+router.get("/", async (_req, res, next) => {
+  try {
+    const utilities = await getAllUtilities();
+    return res.status(200).json({ utilities });
+  } catch (error) {
+    return next(error);
   }
-
-  return res.status(200).json({ utility });
 });
 
-router.patch("/:utilityType", authenticate, (req, res, next) => {
+router.get("/:utilityType", async (req, res, next) => {
+  try {
+    const utilityType = String(req.params.utilityType || "").trim().toLowerCase();
+    const utility = await getUtility(utilityType);
+
+    if (!utility) {
+      return res.status(404).json({ message: "Utility not found." });
+    }
+
+    return res.status(200).json({ utility });
+  } catch (error) {
+    return next(error);
+  }
+});
+
+router.patch("/:utilityType", authenticate, async (req, res, next) => {
   try {
     const utilityType = String(req.params.utilityType || "").trim().toLowerCase();
     const status = String(req.body.status || "").trim().toLowerCase();
@@ -42,7 +51,7 @@ router.patch("/:utilityType", authenticate, (req, res, next) => {
       });
     }
 
-    const updatedUtility = updateUtility(utilityType, { status, message });
+    const updatedUtility = await updateUtility(utilityType, { status, message });
 
     const io = req.app.get("io");
     if (io) {
